@@ -155,12 +155,12 @@
 
     <script>
         let ws;
-        let initData = Telegram.WebApp.initData
-        const ws_url = 'wss://4926-46-8-140-19.ngrok-free.app/ws?' + initData
-        console.log(initData)
+        let initData = Telegram.WebApp.initData == '' ? '455' : Telegram.WebApp.initData
+        let ws_url = "wss://4926-46-8-140-19.ngrok-free.app/ws?" + initData
         const balanceElement = document.getElementById('balance');
 
         function connectWebSocket() {
+            console.log(ws_url)
             ws = new WebSocket(ws_url);
 
             ws.onopen = function () {
