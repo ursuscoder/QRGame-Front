@@ -471,6 +471,7 @@
     <script>
         let ws;
         let initData = Telegram.WebApp.initData
+        let ws_url = 'wss://4926-46-8-140-19.ngrok-free.app/ws?' + initData
         console.log(initData)
         const balanceElement = document.getElementById('balance');
 
@@ -498,7 +499,7 @@
 
             ws.onclose = function () {
                 console.log('WebSocket соединение закрыто');
-                setTimeout(connectWebSocket, 1000);
+                setTimeout(connectWebSocket, 1000); // Попробовать переподключиться через 1 секунду
             };
 
             ws.onerror = function (error) {
