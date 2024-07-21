@@ -160,37 +160,43 @@
         const balanceElement = document.getElementById('balance');
 
         function connectWebSocket() {
-            console.log(ws_url)
-            ws = new WebSocket(ws_url);
+            try {
+                console.log(ws_url);
 
-            ws.onopen = function () {
-                console.log('WebSocket соединение установлено');
-                ws.send(JSON.stringify({ action: 'get_user_info' }));
-            };
+                ws = new WebSocket(ws_url);
 
-            ws.onmessage = function (event) {
-                const data = JSON.parse(event.data);
-                console.log(data)
-                switch (data.type) {
-                    case "REFERAL_AWARD":
-                        break
-                    case "SCAN":
-                        balanceElement.innerText = Number(balanceElement.innerText) + data.scan.award
-                        break
-                    case "USER_INFO":
-                        balanceElement.innerText = data.user.balance;
-                }
-            };
+                ws.onopen = function () {
+                    console.log('WebSocket соединение установлено');
+                    ws.send(JSON.stringify({ action: 'get_user_info' }));
+                };
 
-            ws.onclose = function () {
-                console.log('WebSocket соединение закрыто');
+                ws.onmessage = function (event) {
+                    const data = JSON.parse(event.data);
+                    console.log(data);
+                    switch (data.type) {
+                        case "REFERAL_AWARD":
+                            break;
+                        case "SCAN":
+                            balanceElement.innerText = Number(balanceElement.innerText) + data.scan.award;
+                            break;
+                        case "USER_INFO":
+                            balanceElement.innerText = data.user.balance;
+                    }
+                };
+
+                ws.onclose = function () {
+                    console.log('WebSocket соединение закрыто');
+                    setTimeout(connectWebSocket, 1000); // Попробовать переподключиться через 1 секунду
+                };
+
+                ws.onerror = function (error) {
+                    console.error('WebSocket ошибка: ', error);
+                    ws.close();
+                };
+            } catch (error) {
+                console.error('Ошибка при подключении к WebSocket: ', error);
                 setTimeout(connectWebSocket, 1000); // Попробовать переподключиться через 1 секунду
-            };
-
-            ws.onerror = function (error) {
-                console.error('WebSocket ошибка: ', error);
-                ws.close();
-            };
+            }
         }
 
         function toggleresumepause() {
